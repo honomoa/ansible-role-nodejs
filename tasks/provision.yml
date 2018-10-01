@@ -1,0 +1,44 @@
+---
+
+- name: DEB Add nodejs repository
+  shell: 'curl -sL https://deb.nodesource.com/setup_{{ nodejs_major_version }}.x | bash -'
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+- name: YUM Add nodejs repository
+  shell: 'curl --silent --location https://rpm.nodesource.com/setup_{{ nodejs_major_version }}.x | bash -'
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+
+- name: DEB Install nodejs
+  apt:
+    name: nodejs
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+- name: YUM Install nodejs
+  yum:
+    name: nodejs
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+
+- name: YUM Install build tools
+  apt:
+    name: build-essential
+  when: install_buildtools and (ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux')
+
+- name: YUM Install build tools
+  yum:
+    name: {{ item }}
+  with_item:
+    - gcc-c++
+    - make
+  when: install_buildtools and (ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux')
+
+- name: DEB Ensure Node.js and npm are installed.
+  apt:
+    name: nodejs={{ nodejs_repo_version }}
+    state: present
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+- name: YUM Ensure Node.js and npm are installed.
+  yum:
+    name: nodejs={{ nodejs_repo_version }}
+    state: present
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'

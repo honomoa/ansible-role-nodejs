@@ -1,0 +1,7 @@
+---
+
+nodejs_version: '8.12'
+nodejs_major_version:    "{{ nodejs_version.split('.')|first }}"
+nodejs_minor_version:    "{{ nodejs_version.split('.')[1] }}"
+nodejs_repo_version:     "{{ nodejs_major_version }}.{{ nodejs_minor_version }}*"
+install_buildtools: no
